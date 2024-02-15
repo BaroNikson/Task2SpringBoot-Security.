@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
@@ -65,7 +64,15 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public String showLoginForm() {
+    public String showLoginForm(Model model) {
+        // Установка логина и пароля для админа
+        model.addAttribute("adminLogin", "admin");
+
+
+        // Установка логина и пароля для пользователя
+        model.addAttribute("userLogin", "user");
+
+
         return "login";
     }
 }

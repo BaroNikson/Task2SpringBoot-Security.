@@ -6,12 +6,16 @@ import com.example.rus.boot1.models.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserDAO userDAO;
+    @PersistenceContext
+    private EntityManager entityManager;
 
 
     public UserServiceImpl(UserDAO userDAO) {
@@ -39,19 +43,20 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void updateUser(int id, User updatedUser) {
-        User existingUser = userDAO.getUserById(id);
+        // Создаем объект пользователя с заданным идентификатором
+        User existingUser = new User();
+        existingUser.setId(id);
 
-        if (existingUser != null) {
-            existingUser.setName(updatedUser.getName());
-            existingUser.setSurname(updatedUser.getSurname());
-            existingUser.setDepartment(updatedUser.getDepartment());
-            existingUser.setSalary(updatedUser.getSalary());
+        // Обновляем все поля из обновленного пользователя
+        existingUser.setName(updatedUser.getName());
+        existingUser.setSurname(updatedUser.getSurname());
+        existingUser.setDepartment(updatedUser.getDepartment());
+        existingUser.setSalary(updatedUser.getSalary());
 
-            userDAO.updateUser(existingUser);
-        } else {
-
-        }
+        // Используем merge для обновления или создания пользователя
+        entityManager.merge(existingUser);
     }
+
 
     @Override
     @Transactional

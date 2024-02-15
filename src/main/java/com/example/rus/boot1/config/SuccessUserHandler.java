@@ -19,12 +19,16 @@ public class SuccessUserHandler implements AuthenticationSuccessHandler {
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         for (GrantedAuthority authority : authorities) {
             if (authority.getAuthority().equals("ROLE_ADMIN")) {
+                System.out.println("Admin successfully logged in."); // Добавлено отладочное сообщение
                 response.sendRedirect("/admin");
                 return;
             } else if (authority.getAuthority().equals("ROLE_USER")) {
+                System.out.println("User successfully logged in."); // Добавлено отладочное сообщение
                 response.sendRedirect("/user");
                 return;
             }
         }
+        System.out.println("Unknown user role."); // Добавлено отладочное сообщение
+        response.sendRedirect("/"); // В случае неопределенной роли перенаправляем на главную страницу
     }
 }
